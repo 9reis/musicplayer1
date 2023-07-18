@@ -22,6 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     initPlayer();
+
     super.initState();
   }
 
@@ -54,18 +55,32 @@ class _HomeScreenState extends State<HomeScreen> {
   int repeatCount = 5;
   int currentRepeat = 0;
 
-  void playAudio() async {
-    player.onPlayerComplete.listen((event) {
-      if (currentRepeat < repeatCount) {
-        currentRepeat++;
-        player.seek(Duration.zero);
-        player.play(music);
-      } else {
-        player.stop();
-        currentRepeat = 0;
-      }
-    });
+  void playAudio2(int numberOfTimes) async {
+    Duration time = const Duration();
+    for (int i = 0; i < numberOfTimes; i++) {
+      await player.play(music);
+      await player.getDuration().then((timeOfAudio) {
+        if (timeOfAudio != null) {
+          time = timeOfAudio;
+        }
+      });
+
+      await Future.delayed(time + const Duration(seconds: 1));
+    }
   }
+
+  // void playAudio() async {
+  //   player.onPlayerComplete.listen((event) {
+  //     if (currentRepeat < repeatCount) {
+  //       currentRepeat++;
+  //       player.seek(Duration.zero);
+  //       player.play(music);
+  //     } else {
+  //       player.stop();
+  //       currentRepeat = 0;
+  //     }
+  //   });
+  // }
 
   //    void playAudio(int numberOfTimes) async {
   //   for (int i = 0; i < numberOfTimes; i++) {
@@ -129,7 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(width: 20),
                 InkWell(
-                  onTap: playAudio,
+                  onTap: () => playAudio2(3),
                   child: Icon(
                     isPlaying ? Icons.pause_circle : Icons.play_circle,
                     color: Colors.red,
