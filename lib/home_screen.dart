@@ -1,6 +1,5 @@
-// import 'package:musicplayer1/utils/utils.dart';
-// import 'package:musicplayer1/widgets/audio_info.dart';
 import 'package:audioplayers/audioplayers.dart';
+
 import 'package:flutter/material.dart';
 import 'package:musicplayer1/utils/utils.dart';
 import 'package:musicplayer1/widgets/audio_info.dart';
@@ -15,7 +14,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   bool isPlaying = false;
   late final AudioPlayer player;
-  late final AssetSource path;
+  late final AssetSource music;
 
   Duration _duration = const Duration();
   Duration _position = const Duration();
@@ -34,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future initPlayer() async {
     player = AudioPlayer();
-    path = AssetSource('audios/ukulele.mp3');
+    music = AssetSource('audios/nature.mp3');
 
     // set a callback for changing duration
     player.onDurationChanged.listen((Duration d) {
@@ -52,18 +51,42 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void playPause() async {
-    if (isPlaying) {
-      player.pause();
-      isPlaying = false;
-    } else {
-      for (var i = 0; i < 2; i++) {
-        player.play(path);
+  int repeatCount = 5;
+  int currentRepeat = 0;
+
+  void playAudio() async {
+    player.onPlayerComplete.listen((event) {
+      if (currentRepeat < repeatCount) {
+        currentRepeat++;
+        player.seek(Duration.zero);
+        player.play(music);
+      } else {
+        player.stop();
+        currentRepeat = 0;
       }
-      isPlaying = true;
-    }
-    setState(() {});
+    });
   }
+
+  //    void playAudio(int numberOfTimes) async {
+  //   for (int i = 0; i < numberOfTimes; i++) {
+  //     await player.play(music);
+
+  //     await Future.delayed(Duration(seconds: 2));
+  //   }
+  // }
+
+  // void playPause() async {
+  //   if (isPlaying) {
+  //     await player.pause();
+  //     isPlaying = false;
+  //   } else {
+  //     for (int i = 0; i < 5; i++) {
+  //       await player.play(music);
+  //       isPlaying = true;
+  //     }
+  //   }
+  //   setState(() {});
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(width: 20),
                 InkWell(
-                  onTap: playPause,
+                  onTap: playAudio,
                   child: Icon(
                     isPlaying ? Icons.pause_circle : Icons.play_circle,
                     color: Colors.red,
