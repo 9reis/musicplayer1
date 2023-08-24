@@ -60,11 +60,12 @@ class _HomeScreenState extends State<HomeScreen> {
     for (int i = 0; i < numberOfTimes; i++) {
       await player.play(music);
       await player.getDuration().then((timeOfAudio) {
+        // Pega o tempo da musica
         if (timeOfAudio != null) {
-          time = timeOfAudio;
+          time = timeOfAudio; // Seta o tempo da musica
         }
       });
-
+      // Tempo da musica + 1seg
       await Future.delayed(time + const Duration(seconds: 1));
     }
   }
@@ -144,7 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(width: 20),
                 InkWell(
-                  onTap: () => playAudio2(3),
+                  onTap: () => playAudio2(9),
                   child: Icon(
                     isPlaying ? Icons.pause_circle : Icons.play_circle,
                     color: Colors.red,
